@@ -14,6 +14,7 @@ public class Board {
     private String markers[] = {"*","*","*","*","*","*","*","*","*","*","*","*"};
 
     public Board() {
+
     }
 
     /**
@@ -26,11 +27,10 @@ public class Board {
      */
 
     public void sum(int sumNum) {
-        // Eliminates based on the sum of the two numbers rolled
         if (sumNum < 2 || sumNum > 12) {
             System.err.println("Not a valid move! Re-roll.");
         } else {
-            markers[sumNum] = "X";
+            markers[sumNum-1] = "X";
         }
     }
 
@@ -44,16 +44,54 @@ public class Board {
      */
 
     public void bothDie(int num1, int num2) {
-        if (num1 < 1 || num1 > 12) {
-            if (num2 < 1 || num2 > 12) {
+        if(num1 == num2) {
+            sum(num1+num2);
+        } else if (num1 < 0 || num1 > 12) {
+            System.err.println("Not a valid move! Re-roll.");
+        } else {
+            if (num2 < 0 || num2 > 12) {
                 System.err.println("Not a valid move! Re-roll.");
             } else {
-                markers[num1] = "X";
-                markers[num2] = "X";
+                markers[num1-1] = "X";
+                markers[num2-1] = "X";
             }
-        } else {
-            System.err.println("Not a valid move! Re-roll.");
         }
+    }
+
+    /**
+     * Returns the current score of the game
+     * @return int the current score
+     */
+
+    public int getScore() {
+        int score = 0;
+        for(int i = 0; i < markers.length; i++) {
+            if (markers[i].equals("*")) {
+                score += num[i];
+            }
+        }
+        return score;
+    }
+
+    /**
+     * Checks the current markers to determine
+     * if the game has ended
+     * @return boolean Whether or not the game has ended
+     */
+
+    public boolean endOfGame() {
+        PairOfDice diceEnd = new PairOfDice();
+        diceEnd.roll();
+        for(int i = 0; i < num.length; i++) {
+            if (markers[diceEnd.getTotal()].equals("*")) {
+                return false;
+            } else if(markers[diceEnd.getDie1()].equals("*") || markers[diceEnd.getDie2()].equals("*")) {
+                return false;
+            } else {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
@@ -62,11 +100,12 @@ public class Board {
      */
 
     public String toString() {
-        String n = ""; String m = "";
+        String row1 = new String();
+        String row2 = new String();
         for(int i = 0; i < num.length; i++) {
-            n += num[i] + " ";
-            m += markers[i] + " ";
+            row1 = row1 + num[i] + "\t";
+            row2 = row2 + markers[i] + "\t";
         }
-        return n + "\n" + m;
+        return row1 + "\n" + row2;
     }
 } // end class Board
